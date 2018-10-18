@@ -10,28 +10,20 @@ jobs:
 
     steps:
       - checkout
-      - run: sudo npm install hexo-cli -g
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "package.json" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      - run: yarn install
+      - run: npm install
 
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
-      - run: hexo generate
-      - run: git checkout --orphan gh-pages
-      - run: git rm -rf .
-      - run: rm -rf node_modules/
-      - run: mv public/* .
-      - run: git checkout master .circleci
-      - run: git config --global user.email "peter.flogstad@gmail.com"
-      - run: git config --global user.name "Peter Flogstad"
-      - run: git add .
-      - run: git commit -m "Github pages"
-      - run: git push origin gh-pages --force
+      - run: npm run build
+      - persist_to_workspace:
+          root: .
+          paths: dist

@@ -5,11 +5,11 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "start": "node server.js"
+    "start": "node server.js",
+    "postinstall": "npm run build"
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "express": "^4.16.4",
     "path": "^0.12.7",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",
@@ -18,8 +18,10 @@
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.5",
     "@vue/cli-service": "^3.0.5",
+    "express": "^4.16.4",
     "less": "^3.0.4",
     "less-loader": "^4.1.0",
+    "serve-static": "^1.13.2",
     "vue-template-compiler": "^2.5.17"
   },
   "postcss": {

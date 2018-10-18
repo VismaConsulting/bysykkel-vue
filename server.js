@@ -4,14 +4,6 @@ var path = require('path');
 
 app.use('/', express.static(path.join(__dirname, 'dist')));
 
-// Kubernetes
-app.get('/actuator/isAlive', (req, res) => {
-    res.send('is Alive!');
-});
-
-app.get('/actuator/isReady', (req, res) => {
-    res.send('is Ready!');
-});
-
-// Set PORT
-app.listen(8080, () => console.log('Horer paa port 8080'));
+var port = process.env.PORT || 8080
+app.listen(port)
+console.log('starting project at ' + port)

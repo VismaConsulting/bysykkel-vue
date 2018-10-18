@@ -14,4 +14,4 @@ app.get('/actuator/isReady', (req, res) => {
 });
 
 // Set PORT
-app.listen(8080, () => console.log('Gator app listening on port 8080!'));
+app.listen(5000, () => console.log('Gator app listening on port 8080!'));

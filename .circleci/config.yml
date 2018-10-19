@@ -1,79 +1,79 @@
 version: 2
-  jobs:
-    build:
-      branches:
-        only:
-          - master
-      docker:
-        - image: circleci/node:8.12.0
-      working_directory: ~/repo
+jobs: # a collection of steps
+  build:
+    branches:
+      only:
+        - master
+    docker:
+      - image: circleci/node:8.12.0
+    working_directory: ~/repo
 
-      steps:
-        - checkout
-        - restore_cache:
-            keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
 
-        - run: npm install    # Kjorer npm run build autoamgisk
+      - run: npm install    # Kjorer npm run build autoamgisk
 
-        - save_cache:
-            paths:
-              - node_modules
-            key: v1-dependencies-{{ checksum "package.json" }}
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
 
-        - setup_remote_docker:
-            docker_layer_caching: true
+      - setup_remote_docker:
+          docker_layer_caching: true
 
-    deploy:
-      docker:
-          - image: circleci/python:2.7-jessie
-      working_directory: ~/repo
-      steps:
-        - run:
-            name: Install awscli
-            command: sudo apt-get update && \
-                    sudo apt-get install -y python-pip python-dev apt-transport-https gettext && \
-                    sudo pip install awscli
+  deploy:
+    docker:
+        - image: circleci/python:2.7-jessie
+    working_directory: ~/repo
+    steps:
+      - run:
+          name: Install awscli
+          command: sudo apt-get update && \
+                  sudo apt-get install -y python-pip python-dev apt-transport-https gettext && \
+                  sudo pip install awscli
 
-        - run:
-            name: Install kubectl
-            command: sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - && \
-                         echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list && \
-                         sudo apt-get update && \
-                         sudo apt-get install -y kubectl
+      - run:
+          name: Install kubectl
+          command: sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - && \
+                       echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list && \
+                       sudo apt-get update && \
+                       sudo apt-get install -y kubectl
 
-        - run:
-            name: AWS Auth
-            command: sudo curl -o /usr/bin/aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator && \
-                         sudo chmod +x /usr/bin/aws-iam-authenticator
+      - run:
+          name: AWS Auth
+          command: sudo curl -o /usr/bin/aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator && \
+                       sudo chmod +x /usr/bin/aws-iam-authenticator
 
-        - run:
-            name: AWS Version
-            command: aws --version
+      - run:
+          name: AWS Version
+          command: aws --version
 
-        - run:
-            name: Docker vars
-            command: |
-              echo 'export ECR_REPOSITORY_NAME="fagsamling2018"' >> $BASH_ENV
-              echo 'export APP_NAME="bysykkel-vue-${CIRCLE_BRANCH}"' >> $BASH_ENV
-              echo 'export TAG_NAME="${APP_NAME}.${CIRCLE_BUILD_NUM}"' >> $BASH_ENV
-              echo 'export FULL_IMAGE_NAME="593923806297.dkr.ecr.ecr.eu-west-1.amazonaws.com/${ECR_REPOSITORY_NAME}:${TAG_NAME}"' >> $BASH_ENV
-        - run:
-            name: Docker build
-            command: docker build -t ${FULL_IMAGE_NAME} .
+      - run:
+          name: Docker vars
+          command: |
+            echo 'export ECR_REPOSITORY_NAME="fagsamling2018"' >> $BASH_ENV
+            echo 'export APP_NAME="bysykkel-vue-${CIRCLE_BRANCH}"' >> $BASH_ENV
+            echo 'export TAG_NAME="${APP_NAME}.${CIRCLE_BUILD_NUM}"' >> $BASH_ENV
+            echo 'export FULL_IMAGE_NAME="593923806297.dkr.ecr.ecr.eu-west-1.amazonaws.com/${ECR_REPOSITORY_NAME}:${TAG_NAME}"' >> $BASH_ENV
+      - run:
+          name: Docker build
+          command: docker build -t ${FULL_IMAGE_NAME} .
 
-        - run:
-            name: Docker push
-            command: |
-              eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
-              docker push $FULL_IMAGE_NAME
+      - run:
+          name: Docker push
+          command: |
+            eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+            docker push $FULL_IMAGE_NAME
 
-        - run:
-            name: EKS Deploy
-            command: |
-              aws eks update-kubeconfig --name visma-consulting-eks --region $AWS_DEFAULT_REGION
-              cd ..
-              envsubst < deployment.yaml > output.yaml
-              kubectl apply -f output.yaml
+      - run:
+          name: EKS Deploy
+          command: |
+            aws eks update-kubeconfig --name visma-consulting-eks --region $AWS_DEFAULT_REGION
+            cd ..
+            envsubst < deployment.yaml > output.yaml
+            kubectl apply -f output.yaml

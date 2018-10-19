@@ -32,10 +32,10 @@ jobs:
             echo 'export ECR_REPOSITORY_NAME="fagsamling2018"' >> $BASH_ENV
             echo 'export APP_NAME="bysykkel-vue-${CIRCLE_BRANCH}"' >> $BASH_ENV
             echo 'export TAG_NAME="${APP_NAME}.${CIRCLE_BUILD_NUM}"' >> $BASH_ENV
-            echo 'export FULL_IMAGE_NAME="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:${TAG_NAME}"' >> $BASH_ENV
+            echo 'export FULL_IMAGE_NAME="593923806297.dkr.ecr.ecr.eu-west-1.amazonaws.com/${ECR_REPOSITORY_NAME}:${TAG_NAME}"' >> $BASH_ENV
       - run:
           name: Docker build
-          command: docker build -t 593923806297${FULL_IMAGE_NAME} .
+          command: docker build -t ${FULL_IMAGE_NAME}
 
       - run:
           name: Docker push

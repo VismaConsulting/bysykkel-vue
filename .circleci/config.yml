@@ -1,9 +1,6 @@
 version: 2
 jobs: # a collection of steps
   build:
-    branches:
-      only:
-        - master
     docker:
       - image: circleci/node:8.12.0
     working_directory: ~/repo
@@ -77,3 +74,15 @@ jobs: # a collection of steps
             cd ..
             envsubst < deployment.yaml > output.yaml
             kubectl apply -f output.yaml
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master

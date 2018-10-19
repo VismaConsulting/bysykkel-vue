@@ -16,17 +16,12 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      - run: npm install
+      - run: npm install    # Kjorer npm run build autoamgisk
 
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-
-      - run: npm run build
-      - persist_to_workspace:
-          root: .
-          paths: dist
 
       - setup_remote_docker:
           docker_layer_caching: true

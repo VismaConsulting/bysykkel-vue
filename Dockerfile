@@ -17,6 +17,4 @@ COPY . .
 
 EXPOSE 8080
 
-ENV NAME World
-
 CMD [ "npm", "start" ]

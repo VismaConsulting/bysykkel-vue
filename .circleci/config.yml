@@ -35,7 +35,7 @@ jobs:
             echo 'export FULL_IMAGE_NAME="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:${TAG_NAME}"' >> $BASH_ENV
       - run:
           name: Docker build
-          command: docker build -t $FULL_IMAGE_NAME --build-arg BYSYKKEL_APIKEY=$BYSYKKEL_APIKEY .
+          command: docker build -t $FULL_IMAGE_NAME
 
       - run:
           name: Docker push

@@ -40,13 +40,13 @@ jobs:
       - run:
           name: Docker push
           command: |
-            eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+            eval $(aws ecr get-login --region eu-west-1 --no-include-email)
             docker push $FULL_IMAGE_NAME
 
       - run:
           name: EKS Deploy
           command: |
-            aws eks update-kubeconfig --name visma-consulting-eks --region $AWS_DEFAULT_REGION
+            aws eks update-kubeconfig --name visma-consulting-eks --region eu-west-1
             cd ..
             envsubst < deployment.yaml > output.yaml
             kubectl apply -f output.yaml

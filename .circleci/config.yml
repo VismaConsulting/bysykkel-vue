@@ -46,7 +46,6 @@ jobs:
           name: EKS Deploy
           command: |
             aws eks update-kubeconfig --name visma-consulting-eks --region eu-west-1
-            cd ..
             envsubst < deployment.yaml > output.yaml
             kubectl apply -f output.yaml
 

@@ -1,4 +1,5 @@
 FROM circleci/node:8.12.0
+LABEL description="image for aws cli og node"
 
 RUN sudo apt-get update && \
     sudo apt-get install -y python-pip python-dev apt-transport-https gettext && \

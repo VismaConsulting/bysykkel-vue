@@ -25,26 +25,26 @@ jobs: # a collection of steps
 
   deploy:
     docker:
-        - image: circleci/python:2.7-jessie
+        - image: circleci/openjdk:8-jdk-browsers
     working_directory: ~/repo
     steps:
       - run:
           name: Install awscli
-          command: apt-get update && \
-                  apt-get install -y python-pip python-dev apt-transport-https gettext && \
-                  pip install awscli
+          command: sudo apt-get update && \
+                  sudo apt-get install -y python-pip python-dev apt-transport-https gettext && \
+                  sudo pip install awscli
 
       - run:
           name: Install kubectl
-          command: curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
-                       echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list && \
-                       apt-get update && \
-                       apt-get install -y kubectl
+          command: sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - && \
+                       echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list && \
+                       sudo apt-get update && \
+                       sudo apt-get install -y kubectl
 
       - run:
           name: AWS Auth
-          command: curl -o /usr/bin/aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator && \
-                       chmod +x /usr/bin/aws-iam-authenticator
+          command: sudo curl -o /usr/bin/aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator && \
+                       sudo chmod +x /usr/bin/aws-iam-authenticator
 
       - run:
           name: AWS Version

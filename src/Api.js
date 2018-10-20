@@ -1,21 +1,22 @@
-const baseApiUrl = "/api";
+const host ="/";
+const baseApiUrl = "api";
 const baseStationsUrl = "/stasjoner";
 
 class Api{
 	static getStasjoner(){
-		return baseApiUrl + baseStationsUrl;
+		return host + baseApiUrl + baseStationsUrl;
 	}
 
     static getStasjonerWithAvailability(){
-        return baseApiUrl + baseStationsUrl + "/availability";
+        return host + baseApiUrl + baseStationsUrl + "/availability";
     }
 
 	static getStasjonerById(id){
-        return baseApiUrl + baseStationsUrl + id;
+        return host + baseApiUrl + baseStationsUrl + id;
 	}
 
     static getStasjonerByName(name){
-        return baseApiUrl + baseStationsUrl + name;
+        return host + baseApiUrl + baseStationsUrl + name;
     }
 }
 
